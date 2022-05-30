@@ -4,12 +4,6 @@ import (
 	"fmt"
 )
 
-type TransactionRequest struct {
-	OriginId      string  `json:"originId"  validate:"required,necsfield=DestinationId"`
-	DestinationId string  `json:"destinationId"  validate:"required,necsfield=OriginId"`
-	Amount        float64 `json:"amount"  validate:"required,gte=1,lte=1000000"`
-}
-
 // newOS Creates a new transaction
 func CreateTransaction(transaction *TransactionRequest) (*Transaction, error) {
 

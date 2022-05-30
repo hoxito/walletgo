@@ -1,6 +1,12 @@
 data:
   build: docker/data/.
 services:
+  redis:
+    image: redis:latest
+    volumes:
+      - data:/data
+    ports:
+      - 6379:6379
   mysqlc:
     image: mysql:8.0.29
     restart: unless-stopped
@@ -17,6 +23,7 @@ services:
   app:
     depends_on:
       - mysqlc
+      - redis
     build: .
     restart: unless-stopped
     env_file: ./.env

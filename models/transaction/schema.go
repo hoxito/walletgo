@@ -8,6 +8,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type TransactionRequest struct {
+	OriginId      string  `json:"originId"  validate:"required,necsfield=DestinationId"`
+	DestinationId string  `json:"destinationId"  validate:"required"`
+	Amount        float64 `json:"amount"  validate:"required,gte=1,lte=1000000"`
+}
 type Transaction struct {
 	TransactionId string       `json:"transactionId"  validate:"required"`
 	OriginId      string       `json:"originId"  validate:"required,necsfield=DestinationId"`
