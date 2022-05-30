@@ -1,0 +1,21 @@
+# Docker para desarrollo
+FROM golang:1.14.3-buster
+
+WORKDIR /go/src/walletgo
+
+COPY . .
+
+# Download all the dependencies
+RUN go get -d -v ./...
+
+RUN go get github.com/derekparker/delve/cmd/dlv
+
+# Install the package
+RUN go install -v ./...
+ENV REDIS_URL host.docker.internal:6379
+ENV RABBIT_URL amqp://host.docker.internal
+ENV MYSQL_URL host.docker.internal:3306
+
+EXPOSE 3010 40000
+
+CMD ["dlv", "debug", "--listen=:40001", "--headless=true", "--api-version=2", "--log"]

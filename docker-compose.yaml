@@ -1,0 +1,34 @@
+data:
+  build: docker/data/.
+services:
+  mysqlc:
+    image: mysql:8.0.29
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLC_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLC_DATABASE
+    ports:
+      - $MYSQLC_LOCAL_PORT:$MYSQLC_DOCKER_PORT
+    volumes:
+    - ./docker/data:/docker-entrypoint-initdb.d
+  volumes_from:
+    - data
+  app:
+    depends_on:
+      - mysqlc
+    build: .
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $GO_LOCAL_PORT:$GO_DOCKER_PORT
+    environment:
+      - DB_HOST=mysqlc
+      - DB_USER=$MYSQLC_USER
+      - DB_PASSWORD=$MYSQLC_ROOT_PASSWORD
+      - DB_NAME=$MYSQLC_DATABASE
+      - DB_PORT=$MYSQLC_DOCKER_PORT
+    stdin_open: true
+    tty: true
+volumes: 
+  db:
