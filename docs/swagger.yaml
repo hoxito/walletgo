@@ -1,0 +1,114 @@
+definitions:
+  sql.NullTime:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  wallet.BallanceResponse:
+    properties:
+      currency:
+        type: string
+      name:
+        type: number
+    required:
+    - currency
+    - name
+    type: object
+  wallet.Wallet:
+    properties:
+      ballance:
+        type: number
+      created:
+        $ref: '#/definitions/sql.NullTime'
+      currency:
+        type: string
+      deleted:
+        $ref: '#/definitions/sql.NullTime'
+      name:
+        type: string
+      updated:
+        $ref: '#/definitions/sql.NullTime'
+      userId:
+        type: string
+      walletId:
+        type: string
+    required:
+    - ballance
+    - created
+    - currency
+    - deleted
+    - name
+    - updated
+    - walletId
+    type: object
+host: localhost:3010
+info:
+  contact:
+    email: josearanciba09@gmail.com
+    name: jose aranciba
+  description: This is a simple wallet API. you can handle users, wallets and transactions
+    between them
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Wallet API
+  version: "1.0"
+paths:
+  /user/wallet/:walletid:
+    get:
+      consumes:
+      - application/json
+      description: Finds in DB a wallet with the provided walletid Parameter
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: walletid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+      summary: Gets a user´s wallet with the wallet´s Id
+      tags:
+      - user
+  /user/wallets:
+    get:
+      consumes:
+      - application/json
+      description: Finds every wallet in DB for the logged user using session parameters
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: walletid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/wallet.Wallet'
+              type: array
+            type: array
+      summary: Gets the user´s wallets with their corresponding data
+      tags:
+      - user
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

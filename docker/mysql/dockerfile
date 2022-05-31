@@ -1,0 +1,9 @@
+FROM mysql:8.0.29
+
+
+ENV MYSQL_DATABASE=wallet \
+    MYSQL_ROOT_PASSWORD=jose1
+
+ADD schema.sql /docker-entrypoint-initdb.d
+
+EXPOSE 3306

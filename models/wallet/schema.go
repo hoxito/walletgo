@@ -13,7 +13,7 @@ type Wallet struct {
 	WalletId string       `json:"walletId"  validate:"required"`
 	Name     string       `json:"name" validate:"required"`
 	UserId   string       `json:"userId" `
-	Ballance string       `json:"ballance" validate:"required"`
+	Ballance float64      `json:"ballance" validate:"required"`
 	Currency string       `json:"currency" validate:"required"`
 	Created  sql.NullTime `json:"created" validate:"required"`
 	Deleted  sql.NullTime `json:"deleted" validate:"required"`

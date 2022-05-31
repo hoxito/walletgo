@@ -3,25 +3,27 @@ package controllers
 import (
 	"fmt"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/hoxito/walletgo/models/user"
-	"github.com/hoxito/walletgo/rest/middlewares"
-
 	"github.com/gin-gonic/gin"
+	"github.com/hoxito/walletgo/models/user"
+	"github.com/hoxito/walletgo/models/wallet"
+	"github.com/hoxito/walletgo/rest/middlewares"
 )
 
-/**
- * @apiDefine CreateUser
- *
- * @apiExample
- * 	 Name     string required
- *   Email    string email
- *   Password string required
- *
- */
+// @BasePath /api/v1
+
+// @Summary Creates a user
+// @Schemes
+// @Description Creates a user with given name, mail and (not implemented)password
+// @Tags user
+// @Accept json
+// @Param   name      body string     false  "string valid"       minlength(1)  maxlength(50)
+// @Param   email      body string     false  "string valid"       minlength(1)  maxlength(50)
+// @Param   password      body string     false  "string valid"       minlength(1)  maxlength(50)
+// @Produce json
+// @Success 200 {array} wallet.Wallet
+// @Router /user/new [post]
 func CreateUser(c *gin.Context) {
 
-	//TODO get user from db and che balance > amount
 	//get
 	body := user.UserRequest{}
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -29,20 +31,47 @@ func CreateUser(c *gin.Context) {
 		middlewares.AbortWithError(c, err)
 		return
 	}
-	tr, err := user.CreateUser(&body)
+	usr, err := user.CreateUser(&body)
 
 	if err != nil {
 		middlewares.AbortWithError(c, err)
 		return
 	}
-	if tr == nil {
+	if usr == nil {
 		return
 	}
-	c.JSON(200, tr)
+	c.JSON(200, usr)
 
 }
 
-//Gets wallet from DB. TODO
+// @BasePath /api/v1
+
+// @Summary Gets a user´s current total ballance
+// @Schemes
+// @Description Sums every user wallets ballances for the given Currency
+// @Tags user
+// @Accept json
+// @Param   currency      path string     false  "string valid"       minlength(1)  maxlength(50)
+// @Produce json
+// @Success 200 {array} wallet.BallanceResponse
+// @Router /user/wallet/:walletid [get]
+func GetTotalBalance(c *gin.Context) {
+	uid, err := c.Cookie("UserId")
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
+	wallets, err := user.GetWallets(uid)
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
+	Ballance := wallet.SumBallances(wallets, c.Param("Currency"))
+	c.JSON(200, Ballance)
+
+}
+
+//Creates a wallet  TODO
 func CreateWallet(c *gin.Context) {
 	c.Param("walletId")
 
@@ -50,10 +79,25 @@ func CreateWallet(c *gin.Context) {
 
 }
 
-//Gets a wallet from DB of a certain user
+// @BasePath /api/v1
+
+// @Summary Gets a user´s wallet with the wallet´s Id
+// @Schemes
+// @Description Finds in DB a wallet with the provided walletid Parameter
+// @Tags user
+// @Accept json
+// @Param   walletid      path string     false  "string valid"       minlength(1)  maxlength(50)
+// @Produce json
+// @Success 200 {array} wallet.Wallet
+// @Router /user/wallet/:walletid [get]
 func GetWallet(c *gin.Context) {
-	session := sessions.Default(c)
-	uid := fmt.Sprint(session.Get("UserId"))
+
+	fmt.Println("uid", c)
+	uid, err := c.Cookie("UserId")
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
 	wallet, err := user.GetWallet(uid, c.Param("walletid"))
 	if err != nil {
 		middlewares.AbortWithError(c, err)
@@ -63,10 +107,23 @@ func GetWallet(c *gin.Context) {
 
 }
 
-//Gets wallets of a certain user
+// @BasePath /api/v1
+
+// @Summary Gets the user´s wallets with their corresponding data
+// @Schemes
+// @Description Finds every wallet in DB for the logged user using session parameters
+// @Tags user
+// @Accept json
+// @Param   walletid      path string     false  "string valid"       minlength(1)  maxlength(50)
+// @Produce json
+// @Success 200 {array} []wallet.Wallet
+// @Router /user/wallets [get]
 func GetWallets(c *gin.Context) {
-	session := sessions.Default(c)
-	uid := fmt.Sprint(session.Get("UserId"))
+	uid, err := c.Cookie("UserId")
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
 	wallets, err := user.GetWallets(uid)
 	if err != nil {
 

@@ -9,6 +9,10 @@ type WalletRequest struct {
 	UserId   string `json:"email" `
 	Currency string `json:"currency" validate:"required"`
 }
+type BallanceResponse struct {
+	Ballance float64 `json:"name" validate:"required"`
+	Currency string  `json:"currency" validate:"required"`
+}
 
 // newOS Creates a new wallet
 func CreateWallet(wallet *WalletRequest) (*Wallet, error) {
@@ -43,4 +47,14 @@ func Get(WalletId string) (*Wallet, error) {
 
 func Wallets() ([]*Wallet, error) {
 	return findAll()
+}
+
+func SumBallances(wts []*Wallet, Currency string) (res BallanceResponse) {
+	res.Currency = Currency
+	for _, w := range wts {
+		if w.Currency == Currency {
+			res.Ballance = res.Ballance + w.Ballance
+		}
+	}
+	return res
 }

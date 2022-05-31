@@ -84,7 +84,17 @@ func GetWallet(UserId string, WalletId string) (*wallet.Wallet, error) {
 	db := db.Mysql()
 	defer db.Close()
 	var wlt wallet.Wallet
-	err := db.QueryRow("SELECT * FROM wallet WHERE deleted is null AND iduser=? AND idwallet=?", UserId, WalletId).Scan(&wlt.WalletId, &wlt.Name, &wlt.UserId, &wlt.Ballance, &wlt.Currency, &wlt.Created, &wlt.Deleted, &wlt.Updated)
+	err := db.QueryRow("SELECT * FROM wallet WHERE deleted is null AND iduser=? AND idwallet=?",
+		UserId,
+		WalletId).Scan(
+		&wlt.WalletId,
+		&wlt.Name,
+		&wlt.UserId,
+		&wlt.Ballance,
+		&wlt.Currency,
+		&wlt.Created,
+		&wlt.Deleted,
+		&wlt.Updated)
 
 	if err != nil {
 		switch err {

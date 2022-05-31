@@ -8,23 +8,23 @@ import (
 )
 
 func WalletRoute(router *gin.Engine) {
-	router.POST("/v1/wallet/send", middlewares.ValidateSession, controllers.SendMoney)
-	router.POST("/v1/wallet/:id", middlewares.ValidateSession, controllers.GetWallet)
-	router.GET("/v1/wallet", middlewares.ValidateSession, controllers.GetWallets)
+	router.POST("api/v1/wallet/send", middlewares.ValidateSession, controllers.SendMoney)
+	router.POST("api/v1/wallet/:id", middlewares.ValidateSession, controllers.GetWallet)
+	router.GET("api/v1/wallet", middlewares.ValidateSession, controllers.GetWallets)
 
 }
 func LoginRoute(router *gin.Engine) {
-	router.POST("/v1/login", controllers.Login)
+	router.POST("api/v1/login", controllers.Login)
 
 }
 
 func UserRoute(router *gin.Engine) {
-	router.GET("/v1/user", controllers.Login)
-	router.POST("/v1/user/new", controllers.CreateUser)
-	router.GET("/v1/user/wallets", controllers.GetWallets)
-	router.GET("/v1/user/wallet/:walletid", controllers.GetWallet)
-	router.GET("/v1/user/wallet/:walletid/transactions", controllers.GetTransactions)
-	router.GET("/v1/user/transactions/:transactionid", controllers.GetTransaction)
-	// router.GET("/v1/user/transactions", controllers.Login)
+	router.GET("api/v1/user", controllers.Login)
+	router.POST("api/v1/user/new", controllers.CreateUser)
+	router.GET("api/v1/user/wallets", controllers.GetWallets)
+	router.GET("api/v1/user/Ballance/:Currency", controllers.GetTotalBalance)
+	router.GET("api/v1/user/wallet/:walletid", controllers.GetWallet)
+	router.GET("api/v1/user/wallet/:walletid/transactions", controllers.GetTransactions)
+	router.GET("api/v1/user/transactions/:transactionid", controllers.GetTransaction)
 
 }

@@ -2,23 +2,35 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/hoxito/walletgo/rest/middlewares"
 	"github.com/hoxito/walletgo/rest/routes"
 	"github.com/hoxito/walletgo/tools/env"
 	"github.com/joho/godotenv"
-	ginprometheus "github.com/zsais/go-gin-prometheus"
+	"github.com/penglongli/gin-metrics/ginmetrics"
 
+	docs "github.com/hoxito/walletgo/docs"
 	cors "github.com/itsjamie/gin-cors"
 
-	"github.com/gin-contrib/gzip"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title           Wallet API
+// @version         1.0
+// @description     This is a simple wallet API. you can handle users, wallets and transactions between them
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   jose aranciba
+// @contact.email  josearanciba09@gmail.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:3010
 
 func main() {
 
@@ -28,12 +40,12 @@ func main() {
 	}
 	router := gin.Default()
 
-	store, err := redis.NewStore(10, "tcp", env.Get().RedisURL, "redispw", []byte(env.Get().SessionSecret))
 	if err != nil {
 		fmt.Print("error al conectar a instancia de redis:", err)
 	}
-	router.Use(gzip.Gzip(gzip.DefaultCompression))
-	router.Use(sessions.Sessions("mysession", store))
+
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.Use(static.Serve("/", static.LocalFile("www", true)))
 	router.Use(middlewares.ErrorHandler)
 	router.Use(cors.Middleware(cors.Config{
@@ -48,22 +60,18 @@ func main() {
 
 	//prometheus instrumentation
 
-	p := ginprometheus.NewPrometheus("gin")
-	p.ReqCntURLLabelMappingFn = func(c *gin.Context) string {
-		url := c.Request.URL.Path
-		for _, p := range c.Params {
-			if p.Key == "walletid" {
-				url = strings.Replace(url, p.Value, ":wallet", 1)
-				break
-			}
-			if p.Key == "transactionid" {
-				url = strings.Replace(url, p.Value, ":wallet", 1)
-				break
-			}
-		}
-		return url
-	}
-	p.Use(router)
+	// get global Monitor object
+	m := ginmetrics.GetMonitor()
+
+	// +optional set metric path, default /debug/metrics
+	m.SetMetricPath("/metrics")
+	m.SetSlowTime(10)
+	m.SetDuration([]float64{0.1, 0.3, 1.2, 5, 10})
+
+	// set middleware for gin
+	m.Use(router)
+
+	//routing
 
 	routes.WalletRoute(router)
 	routes.LoginRoute(router)

@@ -1,14 +1,7 @@
-data:
-  build: docker/data/.
+
 services:
-  redis:
-    image: redis:latest
-    volumes:
-      - data:/data
-    ports:
-      - 6379:6379
   mysqlc:
-    image: mysql:8.0.29
+    build: ./docker/mysql/.
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -16,14 +9,17 @@ services:
       - MYSQL_DATABASE=$MYSQLC_DATABASE
     ports:
       - $MYSQLC_LOCAL_PORT:$MYSQLC_DOCKER_PORT
-    volumes:
-    - ./docker/data:/docker-entrypoint-initdb.d
-  volumes_from:
-    - data
+  prom:
+    depends_on:
+      - app
+    build: ./docker/prometheus/.
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $PROM_LOCAL_PORT:$PROM_DOCKER_PORT
   app:
     depends_on:
       - mysqlc
-      - redis
     build: .
     restart: unless-stopped
     env_file: ./.env
