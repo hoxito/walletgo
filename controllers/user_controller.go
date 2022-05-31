@@ -61,7 +61,12 @@ func GetTotalBalance(c *gin.Context) {
 		middlewares.AbortWithError(c, err)
 		return
 	}
-	wallets, err := user.GetWallets(uid)
+	wallets, err := user.Wallets(uid)
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
+	err = validate.Var(c.Param("Currency"), "required,max=3")
 	if err != nil {
 		middlewares.AbortWithError(c, err)
 		return
@@ -98,12 +103,39 @@ func GetWallet(c *gin.Context) {
 		middlewares.AbortWithError(c, err)
 		return
 	}
-	wallet, err := user.GetWallet(uid, c.Param("walletid"))
+	wallet, err := user.Wallet(uid, c.Param("walletid"))
 	if err != nil {
 		middlewares.AbortWithError(c, err)
 		return
 	}
 	c.JSON(200, wallet)
+
+}
+
+// @BasePath /api/v1
+
+// @Summary Gets the logged user
+// @Schemes
+// @Description Finds in DB a user with the userId Parameter provided by cookies
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {array} user.User
+// @Router /user [get]
+func GetCurrenUser(c *gin.Context) {
+
+	fmt.Println("uid", c)
+	uid, err := c.Cookie("UserId")
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
+	user, err := user.Get(uid)
+	if err != nil {
+		middlewares.AbortWithError(c, err)
+		return
+	}
+	c.JSON(200, user)
 
 }
 
@@ -124,7 +156,7 @@ func GetWallets(c *gin.Context) {
 		middlewares.AbortWithError(c, err)
 		return
 	}
-	wallets, err := user.GetWallets(uid)
+	wallets, err := user.Wallets(uid)
 	if err != nil {
 
 		middlewares.AbortWithError(c, err)

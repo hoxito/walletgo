@@ -52,7 +52,7 @@ func findAll() ([]*User, error) {
 	return usrs, nil
 }
 
-func GetWallets(UserId string) ([]*wallet.Wallet, error) {
+func getWallets(UserId string) ([]*wallet.Wallet, error) {
 	db := db.Mysql()
 	defer db.Close()
 	rows, err := db.Query("SELECT idwallet ,name ,iduser ,ballance ,currency ,created, deleted, updated FROM wallet WHERE deleted is null AND iduser=?", UserId)
@@ -79,7 +79,7 @@ func GetWallets(UserId string) ([]*wallet.Wallet, error) {
 
 	return wts, nil
 }
-func GetWallet(UserId string, WalletId string) (*wallet.Wallet, error) {
+func getWallet(UserId string, WalletId string) (*wallet.Wallet, error) {
 
 	db := db.Mysql()
 	defer db.Close()
@@ -117,7 +117,7 @@ func findByID(UserId string) (*User, error) {
 	defer db.Close()
 
 	var usr *User
-	err := db.QueryRow("SELECT * FROM wallet").Scan(usr.UserId, usr.Name, usr.Email, usr.Password, usr.Created, usr.Deleted)
+	err := db.QueryRow("SELECT * FROM user WHERE id=?", UserId).Scan(usr.UserId, usr.Name, usr.Email, usr.Password, usr.Created, usr.Deleted)
 
 	if err != nil {
 		return nil, err
@@ -128,6 +128,32 @@ func findByID(UserId string) (*User, error) {
 
 		case sql.ErrNoRows:
 			return nil, ErrNoWallet
+
+		default:
+			return nil, err
+		}
+	}
+	return usr, nil
+}
+
+// FindByLogin finds a user if username and password match
+func findByLogin(user *Login) (*User, error) {
+
+	db := db.Mysql()
+	defer db.Close()
+
+	var usr *User
+	err := db.QueryRow("SELECT * FROM user WHERE name=? and password=?", user.Name, user.Password).Scan(usr.UserId, usr.Name, usr.Email, usr.Password, usr.Created, usr.Deleted)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		switch err {
+
+		case sql.ErrNoRows:
+			return nil, ErrWrongLogin
 
 		default:
 			return nil, err

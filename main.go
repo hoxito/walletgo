@@ -47,7 +47,6 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.Use(static.Serve("/", static.LocalFile("www", true)))
-	router.Use(middlewares.ErrorHandler)
 	router.Use(cors.Middleware(cors.Config{
 		Origins:         "http://localhost",
 		Methods:         "GET, PUT, POST, DELETE",
@@ -68,6 +67,7 @@ func main() {
 	m.SetSlowTime(10)
 	m.SetDuration([]float64{0.1, 0.3, 1.2, 5, 10})
 
+	router.Use(middlewares.ErrorHandler)
 	// set middleware for gin
 	m.Use(router)
 

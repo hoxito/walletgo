@@ -24,6 +24,88 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/user": {
+            "get": {
+                "description": "Finds in DB a user with the userId Parameter provided by cookies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Gets the logged user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/new": {
+            "post": {
+                "description": "before checking if the origin wallet has funds, it sends the declared amount to the destination wallet and creates a trnsaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Sends money from a wallet to another",
+                "parameters": [
+                    {
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "description": "string valid",
+                        "name": "originId",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "description": "string valid",
+                        "name": "destinationId",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "string valid",
+                        "name": "amount",
+                        "in": "body",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/wallet.Wallet"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/wallet/:walletid": {
             "get": {
                 "description": "Finds in DB a wallet with the provided walletid Parameter",
@@ -113,6 +195,38 @@ const docTemplate = `{
                 }
             }
         },
+        "user.User": {
+            "type": "object",
+            "required": [
+                "created",
+                "name",
+                "password",
+                "userId"
+            ],
+            "properties": {
+                "created": {
+                    "$ref": "#/definitions/sql.NullTime"
+                },
+                "deleted": {
+                    "$ref": "#/definitions/sql.NullTime"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "userId": {
+                    "type": "string",
+                    "maxLength": 50
+                }
+            }
+        },
         "wallet.BallanceResponse": {
             "type": "object",
             "required": [
@@ -137,6 +251,7 @@ const docTemplate = `{
                 "deleted",
                 "name",
                 "updated",
+                "userId",
                 "walletId"
             ],
             "properties": {
@@ -147,7 +262,8 @@ const docTemplate = `{
                     "$ref": "#/definitions/sql.NullTime"
                 },
                 "currency": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 3
                 },
                 "deleted": {
                     "$ref": "#/definitions/sql.NullTime"
@@ -159,17 +275,14 @@ const docTemplate = `{
                     "$ref": "#/definitions/sql.NullTime"
                 },
                 "userId": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50
                 },
                 "walletId": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
         }
     }
 }`

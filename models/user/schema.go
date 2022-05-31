@@ -10,12 +10,18 @@ import (
 
 // User data structure
 type User struct {
-	UserId   string       `json:"userId"  validate:"required"`
-	Name     string       `json:"name" validate:"required"`
+	UserId   string       `json:"userId"  validate:"required,max=50"`
+	Name     string       `json:"name" validate:"required,max=50"`
 	Email    string       `json:"email" `
-	Password string       `json:"password" validate:"required"`
+	Password string       `json:"password" validate:"required,max=50"`
 	Deleted  sql.NullTime `json:"deleted" `
 	Created  sql.NullTime `json:"created" validate:"required"`
+}
+
+// User data structure
+type Login struct {
+	Name     string `json:"name" validate:"required,max=50"`
+	Password string `json:"password" validate:"required,max=50"`
 }
 
 // NewUser Nueva instancia de usuario

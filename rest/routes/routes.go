@@ -19,8 +19,8 @@ func LoginRoute(router *gin.Engine) {
 }
 
 func UserRoute(router *gin.Engine) {
-	router.GET("api/v1/user", controllers.Login)
 	router.POST("api/v1/user/new", controllers.CreateUser)
+	router.GET("api/v1/user", controllers.GetCurrenUser)
 	router.GET("api/v1/user/wallets", controllers.GetWallets)
 	router.GET("api/v1/user/Ballance/:Currency", controllers.GetTotalBalance)
 	router.GET("api/v1/user/wallet/:walletid", controllers.GetWallet)

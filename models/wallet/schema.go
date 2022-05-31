@@ -10,11 +10,11 @@ import (
 
 // Wallet data structure
 type Wallet struct {
-	WalletId string       `json:"walletId"  validate:"required"`
+	WalletId string       `json:"walletId"  validate:"required,max=50"`
 	Name     string       `json:"name" validate:"required"`
-	UserId   string       `json:"userId" `
+	UserId   string       `json:"userId"  validate:"required,max=50"`
 	Ballance float64      `json:"ballance" validate:"required"`
-	Currency string       `json:"currency" validate:"required"`
+	Currency string       `json:"currency" validate:"required,max=3"`
 	Created  sql.NullTime `json:"created" validate:"required"`
 	Deleted  sql.NullTime `json:"deleted" validate:"required"`
 	Updated  sql.NullTime `json:"updated" validate:"required"`

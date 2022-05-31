@@ -4,20 +4,20 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
 type TransactionRequest struct {
-	OriginId      string  `json:"originId"  validate:"required,necsfield=DestinationId"`
-	DestinationId string  `json:"destinationId"  validate:"required"`
+	OriginId      string  `json:"originId"  validate:"required,necsfield=DestinationId,max=50"`
+	DestinationId string  `json:"destinationId"  validate:"required,max=50"`
 	Amount        float64 `json:"amount"  validate:"required,gte=1,lte=1000000"`
 }
 type Transaction struct {
-	TransactionId string       `json:"transactionId"  validate:"required"`
-	OriginId      string       `json:"originId"  validate:"required,necsfield=DestinationId"`
-	DestinationId string       `json:"destinationId"  validate:"required"`
-	Status        string       `json:"status"`
+	TransactionId string       `json:"transactionId"  validate:"required,max=50"`
+	OriginId      string       `json:"originId"  validate:"required,necsfield=DestinationId,max=50"`
+	DestinationId string       `json:"destinationId"  validate:"required,max=50"`
+	Status        string       `json:"status" validate:"required,max=50"`
 	Amount        float64      `json:"amount"  validate:"required,gte=1,lte=1000000"`
 	Created       sql.NullTime `json:"created"`
 }

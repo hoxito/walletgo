@@ -20,6 +20,7 @@ func ErrorHandler(c *gin.Context) {
 
 func AbortWithError(c *gin.Context, err error) {
 	c.Error(err)
+	fmt.Println("aborting...")
 	c.Abort()
 }
 
@@ -83,6 +84,7 @@ func handleValidationError(c *gin.Context, validationErrors validator.Validation
 		err.Add(strings.ToLower(e.Field()), e.Tag())
 	}
 	//TODO necsfield
+	fmt.Println("error:>>>>>>", err)
 	c.JSON(400, err)
 }
 

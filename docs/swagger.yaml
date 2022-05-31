@@ -7,6 +7,29 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  user.User:
+    properties:
+      created:
+        $ref: '#/definitions/sql.NullTime'
+      deleted:
+        $ref: '#/definitions/sql.NullTime'
+      email:
+        type: string
+      name:
+        maxLength: 50
+        type: string
+      password:
+        maxLength: 50
+        type: string
+      userId:
+        maxLength: 50
+        type: string
+    required:
+    - created
+    - name
+    - password
+    - userId
+    type: object
   wallet.BallanceResponse:
     properties:
       currency:
@@ -24,6 +47,7 @@ definitions:
       created:
         $ref: '#/definitions/sql.NullTime'
       currency:
+        maxLength: 3
         type: string
       deleted:
         $ref: '#/definitions/sql.NullTime'
@@ -32,8 +56,10 @@ definitions:
       updated:
         $ref: '#/definitions/sql.NullTime'
       userId:
+        maxLength: 50
         type: string
       walletId:
+        maxLength: 50
         type: string
     required:
     - ballance
@@ -42,6 +68,7 @@ definitions:
     - deleted
     - name
     - updated
+    - userId
     - walletId
     type: object
 host: localhost:3010
@@ -58,6 +85,61 @@ info:
   title: Wallet API
   version: "1.0"
 paths:
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Finds in DB a user with the userId Parameter provided by cookies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/user.User'
+            type: array
+      summary: Gets the logged user
+      tags:
+      - user
+  /user/new:
+    post:
+      consumes:
+      - application/json
+      description: before checking if the origin wallet has funds, it sends the declared
+        amount to the destination wallet and creates a trnsaction
+      parameters:
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: originId
+        schema:
+          type: string
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: destinationId
+        schema:
+          type: string
+      - description: string valid
+        in: body
+        name: amount
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+      summary: Sends money from a wallet to another
+      tags:
+      - user
   /user/wallet/:walletid:
     get:
       consumes:
@@ -108,7 +190,4 @@ paths:
       summary: Gets the user´s wallets with their corresponding data
       tags:
       - user
-securityDefinitions:
-  BasicAuth:
-    type: basic
 swagger: "2.0"

@@ -7,20 +7,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetWallet(t *testing.T) {
+func TestWallet(t *testing.T) {
 
-	response, err := user.GetWallet("testuser1", "testwallet1")
+	response, err := user.Wallet("testuser1", "testwallet1")
 	assert.NoError(t, err)
 	assert.Equal(t, "testwallet1", response.WalletId)
 }
-func TestGetWalletNotFound(t *testing.T) {
+func TestWalletNotFound(t *testing.T) {
 
-	_, err := user.GetWallet("testuser1", "unexistingId")
+	_, err := user.Wallet("testuser1", "unexistingId")
 	assert.Error(t, err)
 }
 
-func TestGetWalletEmptyId(t *testing.T) {
+func TestWalletEmptyId(t *testing.T) {
 
-	_, err := user.GetWallet("testuser1", "")
+	_, err := user.Wallet("testuser1", "")
 	assert.Error(t, err)
 }
