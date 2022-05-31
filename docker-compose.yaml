@@ -26,7 +26,7 @@ services:
     ports:
       - $GO_LOCAL_PORT:$GO_DOCKER_PORT
     environment:
-      - DB_HOST=mysqlc
+      - MYSQL_URL=root:jose1@tcp(host.docker.internal)/wallet
       - DB_USER=$MYSQLC_USER
       - DB_PASSWORD=$MYSQLC_ROOT_PASSWORD
       - DB_NAME=$MYSQLC_DATABASE

@@ -10,20 +10,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-/**
- * @apiDefine SendMoney
- *
- * @apiExample
- *			{string} OriginId
- *			{string}	DestinationId
- *   		{float64}	Amount
- *
- * @apiErrorExample 400
- *    HTTP/1.1 400 Bad Request
- *    {
- *       "error" : "Not Enough Ballance"
- *    }
- */
+// @BasePath /api/v1
+
+// @Summary Sends money from a wallet to another
+// @Schemes
+// @Description before checking if the origin wallet has funds, it sends the declared amount to the destination wallet and creates a trnsaction
+// @Tags user
+// @Accept json
+// @Param   originId      body string     false  "string valid"       minlength(1)  maxlength(50)
+// @Param   destinationId      body string     false  "string valid"       minlength(1)  maxlength(50)
+// @Param   amount      body float64     false  "string valid"       min(1)  max(10000000)
+// @Produce json
+// @Success 200 {array} wallet.Wallet
+// @Router /user/new [post]
 func SendMoney(c *gin.Context) {
 
 	//TODO get user from db and che balance > amount
