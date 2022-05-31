@@ -61,3 +61,27 @@ To load the schema you must run your local instance of mysql and execute the sql
 To load api docs you have to run the application and go to
 
 > (http://localhost:3010/swagger/index.html)
+
+
+## Run Docker Containers
+If you wish to run the application in docker containers you can do so with:
+
+    cd /walletgo
+    docker-compose build
+    docker-compose up
+This will create 3 docker images with their respective containers and run the containers. This containers are Mysqlc, golangApp and PrometheusAPI.
+
+
+## Instrumentation
+To get the aplication scrapped metrics you can start the prometheus container located in walletgo/docker/prometheus/. and visit
+
+> (http://localhost:9090)
+
+You should see the prometheus panel and interact with it. The walletgo App exposes metrics at
+> (http://localhost:3010/metrics)
+
+
+## Testing
+To run tests, you must cd into the desired test folder and run 
+
+    go test -v
