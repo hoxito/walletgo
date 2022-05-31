@@ -56,3 +56,8 @@ The schema is described in the next image:
 ```
 To load the schema you must run your local instance of mysql and execute the sql file located in /walletgo/docker/mysql/schema.sql
 
+
+## API-DOCS
+To load api docs you have to run the application and go to
+
+> (http://localhost:3010/swagger/index.html)
