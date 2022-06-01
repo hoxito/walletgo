@@ -35,12 +35,14 @@ func Send(transaction *Transaction) (*Transaction, error) {
 
 		return nil, NotEnoughBallance
 	}
+	//substract amount from origin wallet ballance
 	_, execErr = tx.Exec("UPDATE wallet set ballance=ballance-? where idwallet=?;",
 		transaction.Amount, transaction.OriginId)
 	if execErr != nil {
 		_ = tx.Rollback()
 		return nil, execErr
 	}
+	//Add amount to destination wallet ballance
 	_, execErr = tx.Exec("UPDATE wallet set ballance=ballance+? where idwallet=?;",
 		transaction.Amount, transaction.DestinationId)
 	if execErr != nil {
