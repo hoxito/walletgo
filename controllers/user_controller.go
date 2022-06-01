@@ -54,7 +54,7 @@ func CreateUser(c *gin.Context) {
 // @Param   currency      path string     false  "string valid"       minlength(1)  maxlength(50)
 // @Produce json
 // @Success 200 {array} wallet.BallanceResponse
-// @Router /user/wallet/:walletid [get]
+// @Router /user/Ballance/:Currency [get]
 func GetTotalBalance(c *gin.Context) {
 	uid, err := c.Cookie("UserId")
 	if err != nil {

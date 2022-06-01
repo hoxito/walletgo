@@ -9,6 +9,7 @@ import (
 )
 
 //create a send transaction
+//TODO check the currency
 func Send(transaction *Transaction) (*Transaction, error) {
 	db := db.Mysql()
 	defer db.Close()

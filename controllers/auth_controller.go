@@ -8,17 +8,16 @@ import (
 
 // @BasePath /api/v1
 
-// @Summary Logs a user with its username
+// @Summary Logs a user with its username and password
 // @Schemes
-// @Description before checking if the origin wallet has funds, it sends the declared amount to the destination wallet and creates a trnsaction
+// @Description Logs the user by running a sql query against the DB checking wether if a user with the provided username and password exists. If it exists, returns it and stores User Id in session
 // @Tags user
 // @Accept json
-// @Param   originId      body string     false  "string valid"       minlength(1)  maxlength(50)
-// @Param   destinationId      body string     false  "string valid"       minlength(1)  maxlength(50)
-// @Param   amount      body float64     false  "string valid"       min(1)  max(10000000)
+// @Param   name      body string     false  "string valid"       minlength(1)  maxlength(50)
+// @Param   password       body string     false  "string valid"       minlength(1)  maxlength(50)
 // @Produce json
 // @Success 200 {array} wallet.Wallet
-// @Router /user/new [post]
+// @Router /login [post]
 func Login(c *gin.Context) {
 
 	body := user.Login{}

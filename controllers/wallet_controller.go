@@ -22,7 +22,7 @@ import (
 // @Param   amount      body float64     false  "string valid"       min(1)  max(10000000)
 // @Produce json
 // @Success 200 {array} wallet.Wallet
-// @Router /user/new [post]
+// @Router /wallet/send [post]
 func SendMoney(c *gin.Context) {
 
 	//TODO get user from db and che balance > amount
@@ -46,7 +46,17 @@ func SendMoney(c *gin.Context) {
 
 }
 
-//Gets a transaction from DB of a certain wallet
+// @BasePath /api/v1
+
+// @Summary Gets a transaction by its id
+// @Schemes
+// @Description Finds in DB a transaction with the provided transactionid Parameter
+// @Tags user
+// @Accept json
+// @Param   transactionid      path string     false  "string valid"       minlength(1)  maxlength(50)
+// @Produce json
+// @Success 200 {array} transaction.Transaction
+// @Router /user/transactions/:transactionid [get]
 func GetTransaction(c *gin.Context) {
 	wallet, err := wallet.GetTransaction(c.Param("transactionid"))
 	if err != nil {
@@ -57,7 +67,17 @@ func GetTransaction(c *gin.Context) {
 
 }
 
-//Gets transactions of a certain wallet
+// @BasePath /api/v1
+
+// @Summary Gets all transactions of a certain wallet
+// @Schemes
+// @Description Finds in DB a transaction with the provided walletid Parameter
+// @Tags user
+// @Accept json
+// @Param   walletid      path string     false  "string valid"       minlength(1)  maxlength(50)
+// @Produce json
+// @Success 200 {array} transaction.Transaction
+// @Router /user/wallet/:walletid/transactions [get]
 func GetTransactions(c *gin.Context) {
 	wallets, err := wallet.GetTransactions(c.Param("walletid"))
 	if err != nil {

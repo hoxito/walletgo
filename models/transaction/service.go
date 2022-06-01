@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// newOS Creates a new transaction
+// newOS Creates a new transaction sending money from a wallet to another if it fails it rolls back
 func CreateTransaction(transaction *TransactionRequest) (*Transaction, error) {
 
 	if err := transaction.ValidateSchema(); err != nil {
@@ -16,6 +16,8 @@ func CreateTransaction(transaction *TransactionRequest) (*Transaction, error) {
 	newTransaction.Amount = transaction.Amount
 
 	fmt.Println("Transaction Created")
+
+	// Sends the money
 	newTransaction, err := Send(newTransaction)
 	if err != nil {
 		return nil, err

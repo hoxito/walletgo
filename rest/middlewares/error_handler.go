@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +11,6 @@ import (
 
 // ErrorHandler a middleware to handle errors
 func ErrorHandler(c *gin.Context) {
-	fmt.Println("handling errors")
 	c.Next()
 
 	handleErrorIfNeeded(c)
@@ -20,7 +18,6 @@ func ErrorHandler(c *gin.Context) {
 
 func AbortWithError(c *gin.Context, err error) {
 	c.Error(err)
-	fmt.Println("aborting...")
 	c.Abort()
 }
 
@@ -83,12 +80,10 @@ func handleValidationError(c *gin.Context, validationErrors validator.Validation
 	for _, e := range validationErrors {
 		err.Add(strings.ToLower(e.Field()), e.Tag())
 	}
-	//TODO necsfield
-	fmt.Println("error:>>>>>>", err)
 	c.JSON(400, err)
 }
 
-// handleError maneja cualquier error para serializarlo como JSON al cliente
+// handleError handles any error to serialize it to JSON
 func handleError(c *gin.Context, err interface{}) {
 	switch value := err.(type) {
 	case custerror.Custom:

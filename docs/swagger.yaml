@@ -7,6 +7,33 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  transaction.Transaction:
+    properties:
+      amount:
+        maximum: 1000000
+        minimum: 1
+        type: number
+      created:
+        $ref: '#/definitions/sql.NullTime'
+      destinationId:
+        maxLength: 50
+        type: string
+      originId:
+        maxLength: 50
+        type: string
+      status:
+        maxLength: 50
+        type: string
+      transactionId:
+        maxLength: 50
+        type: string
+    required:
+    - amount
+    - destinationId
+    - originId
+    - status
+    - transactionId
+    type: object
   user.User:
     properties:
       created:
@@ -85,6 +112,40 @@ info:
   title: Wallet API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Logs the user by running a sql query against the DB checking wether
+        if a user with the provided username and password exists. If it exists, returns
+        it and stores User Id in session
+      parameters:
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: name
+        schema:
+          type: string
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: password
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+      summary: Logs a user with its username and password
+      tags:
+      - user
   /user:
     get:
       consumes:
@@ -102,7 +163,168 @@ paths:
       summary: Gets the logged user
       tags:
       - user
+  /user/Ballance/:Currency:
+    get:
+      consumes:
+      - application/json
+      description: Sums every user wallets ballances for the given Currency
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: currency
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.BallanceResponse'
+            type: array
+      summary: Gets a user´s current total ballance
+      tags:
+      - user
   /user/new:
+    post:
+      consumes:
+      - application/json
+      description: Creates a user with given name, mail and (not implemented)password
+      parameters:
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: name
+        schema:
+          type: string
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: email
+        schema:
+          type: string
+      - description: string valid
+        in: body
+        maxLength: 50
+        minLength: 1
+        name: password
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+      summary: Creates a user
+      tags:
+      - user
+  /user/transactions/:transactionid:
+    get:
+      consumes:
+      - application/json
+      description: Finds in DB a transaction with the provided transactionid Parameter
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: transactionid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/transaction.Transaction'
+            type: array
+      summary: Gets a transaction by its id
+      tags:
+      - user
+  /user/wallet/:walletid:
+    get:
+      consumes:
+      - application/json
+      description: Finds in DB a wallet with the provided walletid Parameter
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: walletid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+      summary: Gets a user´s wallet with the wallet´s Id
+      tags:
+      - user
+  /user/wallet/:walletid/transactions:
+    get:
+      consumes:
+      - application/json
+      description: Finds in DB a transaction with the provided walletid Parameter
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: walletid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/transaction.Transaction'
+            type: array
+      summary: Gets all transactions of a certain wallet
+      tags:
+      - user
+  /user/wallets:
+    get:
+      consumes:
+      - application/json
+      description: Finds every wallet in DB for the logged user using session parameters
+      parameters:
+      - description: string valid
+        in: path
+        maxLength: 50
+        minLength: 1
+        name: walletid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/wallet.Wallet'
+              type: array
+            type: array
+      summary: Gets the user´s wallets with their corresponding data
+      tags:
+      - user
+  /wallet/send:
     post:
       consumes:
       - application/json
@@ -138,56 +360,6 @@ paths:
               $ref: '#/definitions/wallet.Wallet'
             type: array
       summary: Sends money from a wallet to another
-      tags:
-      - user
-  /user/wallet/:walletid:
-    get:
-      consumes:
-      - application/json
-      description: Finds in DB a wallet with the provided walletid Parameter
-      parameters:
-      - description: string valid
-        in: path
-        maxLength: 50
-        minLength: 1
-        name: walletid
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/wallet.Wallet'
-            type: array
-      summary: Gets a user´s wallet with the wallet´s Id
-      tags:
-      - user
-  /user/wallets:
-    get:
-      consumes:
-      - application/json
-      description: Finds every wallet in DB for the logged user using session parameters
-      parameters:
-      - description: string valid
-        in: path
-        maxLength: 50
-        minLength: 1
-        name: walletid
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              items:
-                $ref: '#/definitions/wallet.Wallet'
-              type: array
-            type: array
-      summary: Gets the user´s wallets with their corresponding data
       tags:
       - user
 swagger: "2.0"

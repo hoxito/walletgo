@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/hoxito/walletgo/models/wallet"
 	"github.com/hoxito/walletgo/tools/db"
@@ -116,8 +117,15 @@ func findByID(UserId string) (*User, error) {
 	db := db.Mysql()
 	defer db.Close()
 
-	var usr *User
-	err := db.QueryRow("SELECT * FROM user WHERE id=?", UserId).Scan(usr.UserId, usr.Name, usr.Email, usr.Password, usr.Created, usr.Deleted)
+	var usr User
+	err := db.QueryRow("SELECT * FROM user WHERE iduser=?",
+		UserId).Scan(
+		&usr.UserId,
+		&usr.Name,
+		&usr.Email,
+		&usr.Password,
+		&usr.Created,
+		&usr.Deleted)
 
 	if err != nil {
 		return nil, err
@@ -133,7 +141,7 @@ func findByID(UserId string) (*User, error) {
 			return nil, err
 		}
 	}
-	return usr, nil
+	return &usr, nil
 }
 
 // FindByLogin finds a user if username and password match
@@ -141,12 +149,19 @@ func findByLogin(user *Login) (*User, error) {
 
 	db := db.Mysql()
 	defer db.Close()
-
-	var usr *User
-	err := db.QueryRow("SELECT * FROM user WHERE name=? and password=?", user.Name, user.Password).Scan(usr.UserId, usr.Name, usr.Email, usr.Password, usr.Created, usr.Deleted)
-
+	fmt.Println("HERE:", user.Name, user.Password)
+	var usr User
+	err := db.QueryRow("SELECT * FROM user WHERE name=? and password=?",
+		user.Name,
+		user.Password).Scan(
+		&usr.UserId,
+		&usr.Name,
+		&usr.Email,
+		&usr.Password,
+		&usr.Created,
+		&usr.Deleted)
 	if err != nil {
-		return nil, err
+		return nil, ErrWrongLogin
 	}
 
 	if err != nil {
@@ -159,5 +174,5 @@ func findByLogin(user *Login) (*User, error) {
 			return nil, err
 		}
 	}
-	return usr, nil
+	return &usr, nil
 }
