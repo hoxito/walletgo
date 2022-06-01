@@ -46,6 +46,34 @@ To install the application in your local machine:
     go install
     walletgo
 
+NOTE: to run the application in development and with docker containers you must add the .env file with the following content:
+
+> in walletgo/.env
+
+    MYSQL_URL = "root:jose1@/wallet"
+    
+    MYSQLC_LOCAL_PORT=3307
+    
+    MYSQLC_ROOT_PASSWORD=jose1
+    
+    MYSQLC_DOCKER_PORT=3306
+    
+    MYSQLC_DATABASE=wallet
+    
+    MYSQLC_USER=root
+    
+    PORT=3000
+    
+    GO_DOCKER_PORT=3010
+    
+    GO_LOCAL_PORT=3010
+    
+    SESSION_SECRET=ThisIsASecretShh
+    
+    PROM_DOCKER_PORT=9090
+    
+    PROM_LOCAL_PORT=9090
+
 
 ## Mysql
 
@@ -64,11 +92,12 @@ To load api docs you have to run the application and go to
 
 
 ## Run Docker Containers
-If you wish to run the application in docker containers you can do so with:
+If you wish to run the application in docker containers you can do so creating the .env file mentioned in the "installation" section and running:
 
     cd /walletgo
     docker-compose build
     docker-compose up
+    
 This will create 3 docker images with their respective containers and run the containers. This containers are Mysqlc, golangApp and PrometheusAPI.
 
 
