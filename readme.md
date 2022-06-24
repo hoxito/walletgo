@@ -79,9 +79,9 @@ NOTE: to run the application in development and with docker containers you must 
 
 Users, wallets and transactions are stored in a mysql database [mysql](https://www.mysql.com/downloads/)
 The schema is described in the next image:
-```
-![walletgo schema](https://user-images.githubusercontent.com/60928120/175548669-4ffcb56c-d102-4d81-bb6c-ff9d9880da58.png)
-```
+
+![175548669-4ffcb56c-d102-4d81-bb6c-ff9d9880da58](https://user-images.githubusercontent.com/60928120/175548953-6c1925cd-35d6-4cba-9631-4ce0f12e6b8b.png)
+
 To load the schema you must run your local instance of mysql and execute the sql file located in /walletgo/docker/mysql/schema.sql
 
 
